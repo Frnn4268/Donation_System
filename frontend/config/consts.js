@@ -1,0 +1,1 @@
+export const API_ENDPOINT = `http://localhost:${import.meta.env.PORT}/api/v1/`;

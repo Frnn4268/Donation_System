@@ -1,0 +1,9 @@
+@url = http://localhost:4001
+
+POST {{url}}/api/v1
+Content-Type: application/json
+
+ {
+    "Email": "test",
+    "PasswordHash": "test"
+}
