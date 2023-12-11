@@ -1,16 +1,5 @@
-const { Sequelize, Model, DataTypes } = require('sequelize')
-const dotenv = require('dotenv')
-
-dotenv.config()
-
-const sequelize = new Sequelize({
-  dialect: 'mssql',
-  host: process.env.SERVER,
-  port: process.env.DB_PORT,
-  username: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME
-})
+const { Model, DataTypes } = require('sequelize')
+const { sequelize } = require('../middlewares/databaseMiddleware')
 
 class Users extends Model {}
 
@@ -53,20 +42,9 @@ Users.init(
   },
   {
     sequelize,
-    modelName: 'User',
+    modelName: 'Usuario',
     timestamps: false
   }
 )
 
 module.exports = Users
-
-async function testConnection () {
-  try {
-    await sequelize.authenticate()
-    console.log('Connected to database!')
-  } catch (err) {
-    console.error('Cant connect to database', err)
-  }
-}
-
-testConnection()

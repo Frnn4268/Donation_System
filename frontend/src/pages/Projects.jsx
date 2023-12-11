@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-export const Proyects = () => {
-    const ENDPOINT = 'http://localhost:4001/api/v1/proyectos';
+export const Proyectos = () => {
+    const ENDPOINT = "http://localhost:4000/api/v1/proyectos";
 
     const getToken = () => {
         return sessionStorage.getItem("token");

@@ -1,19 +1,21 @@
 const express = require('express')
 const router = express.Router()
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
-const Users = require('../model/userModel')
+const Usuarios = require('../model/userModel')
 const verifyToken = require('../middlewares/verifyToken')
 
 router.use(verifyToken)
 
 router.get('/', async (req, res) => {
-  const users = await Users.findAll()
-  res.status(200).json(users)
+  const usuarios = await Usuarios.findAll()
+  res.status(200).json(usuarios)
 })
 
 router.get('/:id', async (req, res) => {
   const id = req.params.id
-  const usuario = await Users.findByPk(id)
+  const usuario = await Usuarios.findByPk(id)
 
   if (usuario) {
     res.status(200).json(usuario)
@@ -27,7 +29,7 @@ router.put('/:id', async (req, res) => {
   const dataUsuarios = req.body
 
   try {
-    const updatedRows = await Users.update(
+    const updatedRows = await Usuarios.update(
       {
         Nombre: dataUsuarios.Nombre,
         Apellido: dataUsuarios.Apellido,

@@ -1,1 +1,1 @@
-export const API_ENDPOINT = `http://localhost:${import.meta.env.PORT}/api/v1/`;
+export const API_ENDPOINT = "http://localhost:4000/api/v1/";

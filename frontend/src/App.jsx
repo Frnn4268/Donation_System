@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, NavLink  } from "react-router-dom";
-import { Proyects } from './pages/Proyects';
+import { Proyectos } from './pages/Projects';
 import { Login } from './pages/Login';
-import { Users } from './pages/Users';
+import { Usuarios } from './pages/Users';
 import { Register } from './pages/Register';
 import { Logout } from './pages/Logout';
 import { Donations } from './pages/Donations';
@@ -21,16 +21,16 @@ function App() {
             <NavLink to="/register">Register</NavLink>
           </li>
           <li>
-            <NavLink to="/proyect">Proyects</NavLink>
+            <NavLink to="/proyectos">Proyectos</NavLink>
           </li>
           <li>
-            <NavLink to="/donation">Donations</NavLink>
+            <NavLink to="/donaciones">Donaciones</NavLink>
           </li>
           <li>
-            <NavLink to="/user">Users</NavLink>
+            <NavLink to="/usuarios">Usuarios</NavLink>
           </li>
           <li>
-            <NavLink to="/logout">Logout</NavLink>
+            <NavLink to="/logout">Cerrar sesión</NavLink>
           </li>
         </ul>
       </nav>
@@ -39,11 +39,11 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
-        <Route path="/proyect" element={<Proyects />} />
+        <Route path="/proyectos" element={<Proyectos />} />
 
-        <Route path="/donation" element={<Donations />} />
+        <Route path="/donaciones" element={<Donations />} />
 
-        <Route path="/user" element={<Users />} />
+        <Route path="/usuarios" element={<Usuarios />} />
 
         <Route path="/logout" element={<Logout />} />
     

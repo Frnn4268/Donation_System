@@ -2,8 +2,10 @@ const express = require('express')
 const router = express.Router()
 const cron = require('node-cron')
 const nodemailer = require('nodemailer')
+const sql = require('mssql')
+const multer = require('multer')
 
-const Users = require('../model/userModel')
+const Usuarios = require('../model/usuariosModel')
 
 const { Sequelize } = require('sequelize')
 
@@ -22,8 +24,8 @@ cron.schedule('* * */5 * *', async () => {
   const currentDate = new Date()
 
   try {
-    // Consultar la base de datos para obtener User con correos válidos
-    const users = await Users.findAll({
+    // Consultar la base de datos para obtener usuarios con correos válidos
+    const users = await Usuarios.findAll({
       where: {
         Email: {
           [Sequelize.Op.ne]: null

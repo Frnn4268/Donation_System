@@ -1,8 +1,8 @@
 import  { useEffect, useState, useRef } from "react";
 
 export const Donations = () => {
-  const ENDPOINT = 'http://localhost:4001/api/v1/proyect';
-  const DONACION_ENDPOINT = 'http://localhost:4001/api/v1/donation'; 
+  const ENDPOINT = "http://localhost:4000/api/v1/proyectos";
+  const DONACION_ENDPOINT = "http://localhost:4000/api/v1/donaciones";
 
   const [proyectos, setProyectos] = useState([]);
   const [currentProyecto, setCurrentProyecto] = useState(null);

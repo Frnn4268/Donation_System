@@ -3,12 +3,15 @@ const router = express.Router()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const Users = require('../model/userModel')
+const Usuarios = require('../model/userModel')
 
 router.post('/', async (req, res) => {
+  // Your register logic starts here
   try {
+    // Get user input
     const { Nombre, Apellido, Email, PasswordHash, Rol, Activo } = req.body
 
+    // Validate user input
     if (!(Nombre && Apellido && Email && PasswordHash)) {
       res.status(400).send('All input is required')
       return
@@ -16,7 +19,7 @@ router.post('/', async (req, res) => {
 
     // Check if user already exists
     // Validate if user exists in your database
-    const existingUser = await Users.findOne({ where: { Email } })
+    const existingUser = await Usuarios.findOne({ where: { Email } })
 
     if (existingUser) {
       res.status(409).send('User Already Exists. Please Login')
@@ -27,7 +30,7 @@ router.post('/', async (req, res) => {
     const encryptedPassword = bcrypt.hashSync(PasswordHash, 10)
 
     // Create user in your database
-    const newUser = await Users.create({
+    const newUser = await Usuarios.create({
       Nombre,
       Apellido,
       Email: Email.toLowerCase(), // Sanitize: convert email to lowercase
@@ -56,7 +59,7 @@ router.post('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   const id = req.params.id
-  const usuario = await Users.findByPk(id)
+  const usuario = await Usuarios.findByPk(id)
 
   if (usuario) {
     res.status(200).json(usuario)

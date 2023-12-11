@@ -1,11 +1,8 @@
+require('dotenv').config()
 const app = require('./app')
 
-const serverPort = process.env.PORT
+const serverPort = process.env.BACKEND_PORT || 4010
 
 app.listen(serverPort, () => {
-  try {
-    console.log(`Server running in port ${serverPort}`)
-  } catch (err) {
-    console.error(err)
-  }
+  console.log(`Server running in port ${serverPort}`)
 })

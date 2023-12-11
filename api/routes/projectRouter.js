@@ -4,17 +4,17 @@ const sql = require('mssql')
 const multer = require('multer')
 const { config } = require('../config/sqlServer')
 
-const Proyects = require('../model/proyectModel')
+const Project = require('../model/projectModel')
 const verifyToken = require('../middlewares/verifyToken')
 
 router.get('/', verifyToken, async (req, res) => {
-  const proyecto = await Proyects.findAll()
+  const proyecto = await Project.findAll()
   res.status(200).json(proyecto)
 })
 
 router.get('/:id', verifyToken, async (req, res) => {
   const id = req.params.id
-  const proyecto = await Proyects.findOne({
+  const proyecto = await Project.findOne({
     where: {
       proyectoID: id
     }
@@ -24,8 +24,8 @@ router.get('/:id', verifyToken, async (req, res) => {
 
 router.post('/', verifyToken, async (req, res) => {
   const dataProyectos = req.body
-  await Proyects.sync()
-  const createProyecto = await Proyects.create({
+  await Project.sync()
+  const createProyecto = await Project.create({
     NombreProyecto: dataProyectos.NombreProyecto,
     DescripcionProyecto: dataProyectos.DescripcionProyecto,
     EmpleadoID: dataProyectos.EmpleadoID,
@@ -40,7 +40,7 @@ router.post('/', verifyToken, async (req, res) => {
 router.put('/:id', verifyToken, async (req, res) => {
   const dataProyectos = req.body
   const id = req.params.id
-  const updateProyecto = await Proyects.update({
+  const updateProyecto = await Project.update({
     NombreProyecto: dataProyectos.NombreProyecto,
     DescripcionProyecto: dataProyectos.DescripcionProyecto,
     EmpleadoID: dataProyectos.EmpleadoID,
@@ -58,7 +58,7 @@ router.put('/:id', verifyToken, async (req, res) => {
 
 router.delete('/:id', verifyToken, async (req, res) => {
   const id = req.params.id
-  const deleteProyecto = await Proyects.destroy({
+  const deleteProyecto = await Project.destroy({
     where: {
       proyectoID: id
     }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export const Register = () => {
-    const ENDPOINT = 'http://localhost:4001/api/v1/register'; // Endpoint para el registro
+    const ENDPOINT = "http://localhost:4000/api/v1/register"; // Endpoint para el registro
 
     const [usuario, setUsuario] = useState({
         Nombre: "",

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export const Login = () => {
-  const ENDPOINT = 'http://localhost:4001/api/v1/login';
+  const ENDPOINT = "http://localhost:4000/api/v1/login";
 
   const [usuario, setUsuario] = useState({
     Email: "",

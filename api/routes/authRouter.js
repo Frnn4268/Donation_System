@@ -3,7 +3,7 @@ const router = express.Router()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const Users = require('../model/userModel')
+const Usuarios = require('../model/userModel')
 const { default: helmet } = require('helmet')
 
 router.use(helmet())
@@ -15,41 +15,41 @@ router.post('/login', async (req, res) => {
 
     // Validate user input
     if (!(Email && PasswordHash)) {
-      res.status(400).send('All inputs are required')
+      res.status(400).send('Todos los datos son requeridos')
       return
     }
 
     // Validate if user exists in your database
-    const user = await Users.findOne({ where: { Email } })
+    const usuario = await Usuarios.findOne({ where: { Email } })
 
-    if (!user) {
-      res.status(401).json({ message: 'Invalid password or Email' })
+    if (!usuario) {
+      res.status(401).json({ message: 'Correo o contraseña incorrecta' })
       return
     }
 
-    const isPasswordValid = await bcrypt.compare(PasswordHash, user.PasswordHash)
+    const isPasswordValid = await bcrypt.compare(PasswordHash, usuario.PasswordHash)
 
     if (isPasswordValid) {
       // Create a token
       const token = jwt.sign(
-        { user_id: user.UsuarioID, email: user.Email },
+        { user_id: usuario.UsuarioID, email: usuario.Email },
         process.env.TOKEN_KEY,
         { expiresIn: '2h' }
       )
 
-      user.Token = token
+      usuario.Token = token
 
       res.status(200).json({
-        UsuarioID: user.UsuarioID,
-        Nombre: user.Nombre,
-        Apellido: user.Apellido,
-        Email: user.Email,
-        Rol: user.Rol,
-        Activo: user.Activo,
+        UsuarioID: usuario.UsuarioID,
+        Nombre: usuario.Nombre,
+        Apellido: usuario.Apellido,
+        Email: usuario.Email,
+        Rol: usuario.Rol,
+        Activo: usuario.Activo,
         token
       })
     } else {
-      res.status(401).json({ message: 'Invalid password or Email' })
+      res.status(401).json({ message: 'Correo o contraseña incorrecta' })
     }
   } catch (err) {
     console.log(err)

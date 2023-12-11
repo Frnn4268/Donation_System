@@ -1,20 +1,9 @@
-const { Sequelize, Model, DataTypes } = require('sequelize')
-const dotenv = require('dotenv')
+const { Model, DataTypes } = require('sequelize') // Importación de módulos
+const { sequelize } = require('../middlewares/databaseMiddleware')
 
-dotenv.config()
+class Projects extends Model {}
 
-const sequelize = new Sequelize({
-  dialect: 'mssql',
-  host: 'DESKTOP-MFTH7BM\\EXAMPLE_SQL',
-  port: 1433, // Puerto por defecto de SQL Server
-  username: 'sa',
-  password: '1234',
-  database: 'SistemaDonaciones'
-})
-
-class Proyects extends Model {}
-
-Proyects.init(
+Projects.init(
   {
     ProyectoID: {
       type: DataTypes.INTEGER,
@@ -53,9 +42,9 @@ Proyects.init(
   },
   {
     sequelize,
-    modelName: 'Proyect',
+    modelName: 'Proyecto',
     timestamps: false
   }
 )
 
-module.exports = Proyects
+module.exports = Projects

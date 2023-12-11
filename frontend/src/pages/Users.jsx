@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-export const Users = () => {
-  const ENDPOINT = 'http://localhost:4001/api/v1/usuarios';
+export const Usuarios = () => {
+  const ENDPOINT = "http://localhost:4000/api/v1/usuarios";
 
   const [usuarios, setUsuarios] = useState([]);
 
@@ -103,3 +103,5 @@ export const Users = () => {
     </div>
   );
 };
+
+export default Usuarios;
