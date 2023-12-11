@@ -1,19 +1,20 @@
-const express = require('express')
+const express = require('express') // Importing modules
 const router = express.Router()
-const sql = require('mssql')
 const multer = require('multer')
-const { config } = require('../config/sqlServer')
+const upload = multer()
 
 const Project = require('../model/projectModel')
 const verifyToken = require('../middlewares/verifyToken')
 
 router.use(verifyToken)
 
+// GET route to retrieve all projects
 router.get('/', async (req, res) => {
   const proyecto = await Project.findAll()
   res.status(200).json(proyecto)
 })
 
+// GET route to retrieve a specific project by ID
 router.get('/:id', async (req, res) => {
   const id = req.params.id
   const proyecto = await Project.findOne({
@@ -24,6 +25,7 @@ router.get('/:id', async (req, res) => {
   res.status(200).json(proyecto)
 })
 
+// POST route to create a new project
 router.post('/', async (req, res) => {
   const dataProyectos = req.body
   await Project.sync()
@@ -39,6 +41,7 @@ router.post('/', async (req, res) => {
   res.status(201).json(createProyecto)
 })
 
+// PUT route to update an existing project by ID
 router.put('/:id', async (req, res) => {
   const dataProyectos = req.body
   const id = req.params.id
@@ -58,6 +61,7 @@ router.put('/:id', async (req, res) => {
   res.status(200).json(updateProyecto)
 })
 
+// DELETE route to delete a project by ID
 router.delete('/:id', async (req, res) => {
   const id = req.params.id
   const deleteProyecto = await Project.destroy({
@@ -68,69 +72,63 @@ router.delete('/:id', async (req, res) => {
   res.status(200).json(deleteProyecto)
 })
 
-const storage = multer.memoryStorage() // Almacenar el archivo en memoria
-const upload = multer({ storage })
-
+// POST route to upload a file for a specific project
 router.post('/:id/cargar-archivo', upload.single('archivo'), async (req, res, next) => {
   const proyectoID = req.params.id
-  const archivoData = req.file.buffer // Datos binarios del archivo
+  const archivoData = req.file.buffer // Binary data of the file
 
   try {
-    const connection = await sql.connect(config)
-    const result = await connection
-      .request()
-      .input('ProyectoID', sql.Int, proyectoID)
-      .input('DocumentoSoporte', sql.VarBinary(sql.MAX), archivoData)
-      .query('UPDATE Proyectos SET DocumentoSoporte = @DocumentoSoporte WHERE ProyectoID = @ProyectoID')
-    res.status(200)
+    const proyecto = await Project.findByPk(proyectoID)
+
+    if (!proyecto) {
+      return res.status(404).json({ error: 'Project not found' })
+    }
+
+    proyecto.DocumentoSoporte = archivoData
+    await proyecto.save()
+
+    res.status(200).json({ message: 'File uploaded successfully' })
   } catch (err) {
     console.error(err)
-    res.statusCode = 500
-    res.send(err)
+    res.status(500).json({ error: 'Error loading file' })
   }
 })
 
+// GET route to retrieve supporting documents for a specific project
 router.get('/:id/documentos-soporte', async (req, res) => {
   const proyectoID = req.params.id
 
   try {
-    const connection = await sql.connect(config)
-    const result = await connection
-      .request()
-      .input('ProyectoID', sql.Int, proyectoID)
-      .query('SELECT DocumentoSoporte FROM Proyectos WHERE ProyectoID = @ProyectoID AND DocumentoSoporte IS NOT NULL')
+    const proyecto = await Project.findByPk(proyectoID)
 
-    if (result.recordset.length > 0) {
-      res.status(200).json(result.recordset)
-    } else {
-      res.status(204).send('No se encontraron archivos de soporte para el proyecto.')
+    if (!proyecto || !proyecto.DocumentoSoporte) {
+      return res.status(204).send('No supporting files were found for the project.')
     }
+
+    res.status(200).json([{ DocumentoSoporte: proyecto.DocumentoSoporte }])
   } catch (err) {
     console.error(err)
-    res.status(500).send(err)
+    res.status(500).json({ error: 'Error getting support files' })
   }
 })
 
+// GET route to view a specific supporting document for a project
 router.get('/:id/ver-archivo', async (req, res) => {
   const proyectoID = req.params.id
 
   try {
-    const connection = await sql.connect(config)
-    const result = await connection
-      .request()
-      .input('ProyectoID', sql.Int, proyectoID)
-      .query('SELECT DocumentoSoporte FROM Proyectos WHERE ProyectoID = @ProyectoID AND DocumentoSoporte IS NOT NULL')
+    const proyecto = await Project.findByPk(proyectoID)
 
-    if (result.recordset.length > 0) {
-      const documentoSoporte = result.recordset[0].DocumentoSoporte
-      res.setHeader('Content-Type', 'application/pdf') // Puedes ajustar el tipo de contenido según el tipo de archivo.
-      res.send(documentoSoporte)
-    } else {
-      res.status(204).send('No se encontraron archivos de soporte para el proyecto.')
+    if (!proyecto || !proyecto.DocumentoSoporte) {
+      return res.status(204).send('No supporting files were found for the project.')
     }
+
+    const documentoSoporte = proyecto.DocumentoSoporte
+    res.setHeader('Content-Type', 'application/pdf') // Ajusta el tipo de contenido según el tipo de archivo.
+    res.send(documentoSoporte)
   } catch (err) {
     console.error(err)
-    res.status(500).send(err)
+    res.status(500).json({ error: 'Error viewing support file' })
   }
 })
 

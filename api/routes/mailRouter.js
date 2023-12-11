@@ -2,8 +2,6 @@ const express = require('express')
 const router = express.Router()
 const cron = require('node-cron')
 const nodemailer = require('nodemailer')
-const sql = require('mssql')
-const multer = require('multer')
 
 const Usuarios = require('../model/usuariosModel')
 

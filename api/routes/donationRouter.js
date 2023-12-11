@@ -1,16 +1,16 @@
-const express = require('express')
+const express = require('express') // Importing modules
 const router = express.Router()
 
-const Project = require('../model/projectModel')
+const Project = require('../model/projectModel') // Importing models
 const Donation = require('../model/donationModel')
-const verifyToken = require('../middlewares/verifyToken')
+const verifyToken = require('../middlewares/verifyToken') // Importing the token checker
 
 router.use(verifyToken)
 
-// Ruta para guardar una nueva donación
+// Route to save a new donation
 router.post('/', async (req, res) => {
   try {
-    // Obtén los datos de la donación desde el cuerpo de la solicitud
+    // Get donation data from the request body
     const {
       DonanteID,
       EmpleadoID,
@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
       Estado
     } = req.body
 
-    // Crea una nueva donación en la base de datos
+    // Create a new donation in the database
     const newDonation = await Donation.create({
       DonanteID,
       EmpleadoID,
@@ -32,10 +32,10 @@ router.post('/', async (req, res) => {
       Estado
     })
 
-    // Obtén el proyecto asociado a la donación
+    // Get the project associated with the donation
     const project = await Project.findByPk(ProyectoID)
 
-    // Actualiza la meta total del proyecto sumándole el monto de la donación
+    // Update the total goal of the project by subtracting the donation amount
     if (project) {
       project.MetaTotal -= Monto
       await project.save()
@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
     res.status(201).json(newDonation)
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: 'Error al procesar la donación.' })
+    res.status(500).json({ error: 'Error processing the donation.' })
   }
 })
 

@@ -1,40 +1,54 @@
-const express = require('express')
+const express = require('express') // Importing modules
 const router = express.Router()
 
-const Usuarios = require('../model/userModel')
+const Users = require('../model/userModel') // Importing models
 const verifyToken = require('../middlewares/verifyToken')
 
 router.use(verifyToken)
 
+// Route to get all users
 router.get('/', async (req, res) => {
-  const usuarios = await Usuarios.findAll()
-  res.status(200).json(usuarios)
-})
-
-router.get('/:id', async (req, res) => {
-  const id = req.params.id
-  const usuario = await Usuarios.findByPk(id)
-
-  if (usuario) {
-    res.status(200).json(usuario)
-  } else {
-    res.status(404).json()
+  try {
+    const users = await Users.findAll()
+    res.status(200).json(users)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Error fetching users.' })
   }
 })
 
-router.put('/:id', async (req, res) => {
+// Route to get a specific user by ID
+router.get('/:id', async (req, res) => {
   const id = req.params.id
-  const dataUsuarios = req.body
 
   try {
-    const updatedRows = await Usuarios.update(
+    const user = await Users.findByPk(id)
+
+    if (user) {
+      res.status(200).json(user)
+    } else {
+      res.status(404).json()
+    }
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Error fetching user.' })
+  }
+})
+
+// Route to update a user by ID
+router.put('/:id', async (req, res) => {
+  const id = req.params.id
+  const userData = req.body
+
+  try {
+    const updatedRows = await Users.update(
       {
-        Nombre: dataUsuarios.Nombre,
-        Apellido: dataUsuarios.Apellido,
-        Email: dataUsuarios.Email,
-        PasswordHash: dataUsuarios.PasswordHash,
-        Rol: dataUsuarios.Rol,
-        Activo: dataUsuarios.Activo
+        Nombre: userData.Nombre,
+        Apellido: userData.Apellido,
+        Email: userData.Email,
+        PasswordHash: userData.PasswordHash,
+        Rol: userData.Rol,
+        Activo: userData.Activo
       },
       {
         where: {
@@ -49,6 +63,7 @@ router.put('/:id', async (req, res) => {
       res.status(404).json()
     }
   } catch (error) {
+    console.error(error)
     res.status(500).json()
   }
 })
