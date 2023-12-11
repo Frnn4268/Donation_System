@@ -20,7 +20,7 @@ Projects.init(
     EmpleadoID: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'Usuario',
+        model: 'Usuarios',
         key: 'UsuarioID'
       }
     },
@@ -43,7 +43,7 @@ Projects.init(
   },
   {
     sequelize,
-    modelName: 'Proyecto',
+    modelName: 'Proyectos',
     timestamps: false
   }
 )

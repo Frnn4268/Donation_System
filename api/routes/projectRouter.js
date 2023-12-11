@@ -7,12 +7,14 @@ const { config } = require('../config/sqlServer')
 const Project = require('../model/projectModel')
 const verifyToken = require('../middlewares/verifyToken')
 
-router.get('/', verifyToken, async (req, res) => {
+router.use(verifyToken)
+
+router.get('/', async (req, res) => {
   const proyecto = await Project.findAll()
   res.status(200).json(proyecto)
 })
 
-router.get('/:id', verifyToken, async (req, res) => {
+router.get('/:id', async (req, res) => {
   const id = req.params.id
   const proyecto = await Project.findOne({
     where: {
@@ -22,7 +24,7 @@ router.get('/:id', verifyToken, async (req, res) => {
   res.status(200).json(proyecto)
 })
 
-router.post('/', verifyToken, async (req, res) => {
+router.post('/', async (req, res) => {
   const dataProyectos = req.body
   await Project.sync()
   const createProyecto = await Project.create({
@@ -37,7 +39,7 @@ router.post('/', verifyToken, async (req, res) => {
   res.status(201).json(createProyecto)
 })
 
-router.put('/:id', verifyToken, async (req, res) => {
+router.put('/:id', async (req, res) => {
   const dataProyectos = req.body
   const id = req.params.id
   const updateProyecto = await Project.update({
@@ -56,7 +58,7 @@ router.put('/:id', verifyToken, async (req, res) => {
   res.status(200).json(updateProyecto)
 })
 
-router.delete('/:id', verifyToken, async (req, res) => {
+router.delete('/:id', async (req, res) => {
   const id = req.params.id
   const deleteProyecto = await Project.destroy({
     where: {

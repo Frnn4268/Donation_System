@@ -6,8 +6,10 @@ const logger = require('morgan')
 const cors = require('cors')
 const session = require('express-session')
 const helmet = require('helmet')
-require('dotenv').config()
+
 const { testConnection } = require('./middlewares/databaseMiddleware')
+
+require('dotenv').config()
 
 const indexRouter = require('./routes/indexRouter')
 const proyectosRouter = require('./routes/projectRouter')
@@ -17,14 +19,13 @@ const registerRouter = require('./routes/regRouter')
 const donacionesRouter = require('./routes/donationRouter')
 
 const app = express()
+app.use(testConnection)
 
 app.use(session({
   secret: process.env.TOKEN_KEY,
   resave: false,
   saveUninitialized: true
 }))
-
-app.use(testConnection)
 
 const corsOptions = {
   origin: process.env.FRONTEND_DOMAIN, // Colocar dominio de Digital Ocean

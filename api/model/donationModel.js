@@ -18,7 +18,7 @@ Donations.init(
     EmpleadoID: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'Usuario',
+        model: 'Usuarios',
         key: 'UsuarioID'
       }
     },
@@ -26,12 +26,12 @@ Donations.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Proyecto',
+        model: 'Proyectos',
         key: 'ProyectoID'
       }
     },
     FechaDonacion: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false
     },
     Monto: {
@@ -49,7 +49,7 @@ Donations.init(
   },
   {
     sequelize,
-    modelName: 'Donacion',
+    modelName: 'Donaciones',
     timestamps: false
   }
 )
