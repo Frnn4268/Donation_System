@@ -1,7 +1,7 @@
-const { Sequelize } = require('sequelize') // Importación de módulos
+const { Sequelize } = require('sequelize') // Modules import
 require('dotenv').config()
 
-const sequelize = new Sequelize({
+const sequelize = new Sequelize({ // Sequelize database connection
   dialect: 'mssql',
   host: process.env.SERVER,
   port: process.env.DB_PORT,
@@ -10,7 +10,7 @@ const sequelize = new Sequelize({
   database: process.env.DB_NAME
 })
 
-async function testConnection (req, res, next) {
+async function testConnection (req, res, next) { // Connection test with Sequelize
   try {
     await sequelize.authenticate()
     console.log('Connection to the database has been established successfully.')

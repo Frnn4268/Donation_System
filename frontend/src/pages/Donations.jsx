@@ -48,7 +48,7 @@ export const Donations = () => {
 
     const donacion = {
       DonanteID: null,
-      EmpleadoID: 1,
+      EmpleadoID: currentProyecto.EmpleadoID,
       ProyectoID: currentProyecto.ProyectoID,
       FechaDonacion: new Date(),
       Monto: parseFloat(montoDonacion),

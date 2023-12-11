@@ -1,8 +1,9 @@
-const { Model, DataTypes } = require('sequelize') // Importación de módulos
+const { Model, DataTypes } = require('sequelize') // Importing modules
 const { sequelize } = require('../middlewares/databaseMiddleware')
 
-class Projects extends Model {}
+class Projects extends Model {} // Define a class named Projects that extends the Sequelize
 
+// Initialize the Projects model with specific atributes
 Projects.init(
   {
     ProyectoID: {

@@ -1,85 +1,59 @@
 const express = require('express')
 const router = express.Router()
-const sql = require('mssql')
-const { config } = require('../config/sqlServer')
+const { Projects } = require('../model/projectModel') // Importar los modelos de Sequelize
+const { Donations } = require('../model/donationModel')
 
 const verifyToken = require('../middlewares/verifyToken')
 
 router.use(verifyToken)
 
 router.post('/', async (req, res, next) => {
-  const donacion = req.body
+  const donation = req.body
 
-  console.log('Donacion recibida:', donacion)
+  console.log('Donación recibida:', donation)
 
   try {
-    const connection = await sql.connect(config)
+    const project = await Projects.findByPk(donation.ProyectoID)
 
-    const proyecto = await connection
-      .request()
-      .input('ProyectoID', sql.Int, donacion.ProyectoID)
-      .query('SELECT MetaTotal FROM Proyectos WHERE ProyectoID = @ProyectoID')
+    if (!project) {
+      return res.status(404).json({ error: 'Proyecto no encontrado' })
+    }
 
-    const montoTotalProyecto = proyecto.recordset[0].MetaTotal
+    const totalProjectAmount = project.MetaTotal
 
-    console.log('Monto total del proyecto antes de la donación:', montoTotalProyecto)
+    console.log('Monto total del proyecto antes de la donación:', totalProjectAmount)
 
-    if (montoTotalProyecto >= donacion.Monto) {
-      const transaction = new sql.Transaction(connection)
+    if (totalProjectAmount >= donation.Monto) {
+      try {
+        const donationResult = await Donations.create({
+          DonanteID: donation.DonanteID,
+          EmpleadoID: donation.EmpleadoID,
+          ProyectoID: donation.ProyectoID,
+          FechaDonacion: donation.FechaDonacion,
+          Monto: donation.Monto,
+          BoletaDeposito: donation.BoletaDeposito,
+          Estado: donation.Estado
+        })
 
-      transaction.begin(async (err) => {
-        if (err) {
-          console.error(err)
-          res.status(500).json({ error: 'Error al realizar la donación' })
-          return
-        }
+        console.log('Resultados de la donación:', donationResult)
 
-        try {
-          const resultDonaciones = await connection
-            .request()
-            .input('DonanteID', sql.Int, donacion.DonanteID)
-            .input('EmpleadoID', sql.Int, donacion.EmpleadoID)
-            .input('ProyectoID', sql.Int, donacion.ProyectoID)
-            .input('FechaDonacion', sql.DateTime, donacion.FechaDonacion)
-            .input('Monto', sql.Decimal(10, 2), donacion.Monto)
-            .input('BoletaDeposito', sql.VarChar(255), donacion.BoletaDeposito)
-            .input('Estado', sql.VarChar(50), donacion.Estado)
-            .query(
-              'INSERT INTO Donaciones (DonanteID, EmpleadoID, ProyectoID, FechaDonacion, Monto, BoletaDeposito, Estado) VALUES (@DonanteID, @EmpleadoID, @ProyectoID, @FechaDonacion, @Monto, @BoletaDeposito, @Estado)'
-            )
+        await Projects.update(
+          { MetaTotal: totalProjectAmount - donation.Monto },
+          { where: { ProyectoID: donation.ProyectoID } }
+        )
 
-          console.log('Resultados de la donación:', resultDonaciones)
+        console.log('Monto total del proyecto después de la donación:', totalProjectAmount - donation.Monto)
 
-          await connection
-            .request()
-            .input('ProyectoID', sql.Int, donacion.ProyectoID)
-            .input('MontoDonado', sql.Decimal(10, 2), donacion.Monto)
-            .query(
-              'UPDATE Proyectos SET MetaTotal = MetaTotal - @MontoDonado WHERE ProyectoID = @ProyectoID'
-            )
-
-          console.log('Monto total del proyecto después de la donación:', montoTotalProyecto - donacion.Monto)
-
-          transaction.commit((err) => {
-            if (err) {
-              console.error(err)
-              res.status(500).json({ error: 'Error al realizar la donación' })
-              return
-            }
-            res.status(200).json(resultDonaciones.rowsAffected)
-          })
-        } catch (err) {
-          console.error(err)
-          transaction.rollback(() => {
-            res.status(500).json({ error: 'Error al realizar la donación' })
-          })
-        }
-      })
+        res.status(200).json(donationResult)
+      } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: 'Error al realizar la donación' })
+      }
     } else {
       res.status(400).json({ error: 'Fondos insuficientes en el proyecto' })
     }
-  } catch (err) {
-    console.error(err)
+  } catch (error) {
+    console.error(error)
     res.status(500).json({ error: 'Error al realizar la donación' })
   }
 })

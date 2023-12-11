@@ -1,55 +1,54 @@
-const express = require('express')
+const express = require('express') // Importing modules
 const router = express.Router()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const { default: helmet } = require('helmet') // Importing models for security headers
 
-const Usuarios = require('../model/userModel')
-const { default: helmet } = require('helmet')
+const Users = require('../model/userModel') // Importing Model called userModel
 
 router.use(helmet())
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res) => { // Route for user login
   try {
-    // Get user input
+    // Get user input from the request body
     const { Email, PasswordHash } = req.body
 
-    // Validate user input
-    if (!(Email && PasswordHash)) {
-      res.status(400).send('Todos los datos son requeridos')
+    if (!(Email && PasswordHash)) { // Validate user input
+      res.status(400).send('All inputs are required!')
       return
     }
 
-    // Validate if user exists in your database
-    const usuario = await Usuarios.findOne({ where: { Email } })
-
-    if (!usuario) {
-      res.status(401).json({ message: 'Correo o contraseña incorrecta' })
+    // Check if the user exists in the database
+    const user = await Users.findOne({ where: { Email } })
+    if (!user) {
+      res.status(401).json({ message: 'Incorrect Email or password' })
       return
     }
 
-    const isPasswordValid = await bcrypt.compare(PasswordHash, usuario.PasswordHash)
+    // Password validate
+    const isPasswordValid = await bcrypt.compare(PasswordHash, user.PasswordHash)
 
     if (isPasswordValid) {
-      // Create a token
+      // Create a JWT token
       const token = jwt.sign(
-        { user_id: usuario.UsuarioID, email: usuario.Email },
+        { user_id: user.UsuarioID, email: user.Email },
         process.env.TOKEN_KEY,
         { expiresIn: '2h' }
       )
 
-      usuario.Token = token
+      user.Token = token
 
-      res.status(200).json({
-        UsuarioID: usuario.UsuarioID,
-        Nombre: usuario.Nombre,
-        Apellido: usuario.Apellido,
-        Email: usuario.Email,
-        Rol: usuario.Rol,
-        Activo: usuario.Activo,
+      res.status(200).json({ // Respond with user details and the token
+        UsuarioID: user.UsuarioID,
+        Nombre: user.Nombre,
+        Apellido: user.Apellido,
+        Email: user.Email,
+        Rol: user.Rol,
+        Activo: user.Activo,
         token
       })
     } else {
-      res.status(401).json({ message: 'Correo o contraseña incorrecta' })
+      res.status(401).json({ message: 'Incorrect Email or password' })
     }
   } catch (err) {
     console.log(err)
@@ -57,8 +56,8 @@ router.post('/login', async (req, res) => {
   }
 })
 
-router.get('/logout', async (req, res, next) => {
-  req.session.UsuarioID = null
+router.get('/logout', async (req, res, next) => { // Define a route for user logout
+  req.session.UsuarioID = null // Clear the user session
   res.send(200)
 })
 
