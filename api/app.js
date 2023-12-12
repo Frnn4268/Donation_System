@@ -38,9 +38,9 @@ viewMiddleware(app) // Use the custom middleware for rendering views
 app.use('/', indexRouter)
 app.use('/api/v1', loginRouter)
 app.use('/api/v1/register', registerRouter)
-app.use('/api/v1/proyectos', proyectosRouter)
-app.use('/api/v1/donaciones', donacionesRouter)
-app.use('/api/v1/usuarios', usuariosRouter)
+app.use('/api/v1/projects', proyectosRouter)
+app.use('/api/v1/donations', donacionesRouter)
+app.use('/api/v1/users', usuariosRouter)
 
 app.use(notFoundMiddleware) // Use the custom middleware for handling 404 errors
 app.use(errorMiddleware) // Use the custom middleware for handling errors

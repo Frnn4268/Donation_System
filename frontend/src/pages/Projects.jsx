@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 export const Projects = () => {
-    const ENDPOINT = "http://localhost:4000/api/v1/proyectos";
+    const PROJECT_ENDPOINT = import.meta.env.VITE_PROJECT_ENDPOINT;
 
     const getToken = () => {
         return sessionStorage.getItem("token");
@@ -21,7 +21,7 @@ export const Projects = () => {
     })
 
     const getAll = async () => {
-        let fetchResp = await fetch(ENDPOINT)
+        let fetchResp = await fetch(PROJECT_ENDPOINT)
         let dataJson = await fetchResp.json()
         setProyectos(dataJson);
     }
@@ -30,7 +30,7 @@ export const Projects = () => {
         (async () => {
             try {
                 console.log(sessionStorage.getItem("token"));
-                const response = await fetch(ENDPOINT, {
+                const response = await fetch(PROJECT_ENDPOINT, {
                     headers: {
                         "Authorization": `Bearer ${getToken()}` 
                       }
@@ -87,7 +87,7 @@ export const Projects = () => {
     }
 
     const postData = async (data) => {
-        let fetchResp = await fetch(ENDPOINT, {
+        let fetchResp = await fetch(PROJECT_ENDPOINT, {
           method: "POST",
           headers: {
               "Content-Type": "application/json",
@@ -100,7 +100,7 @@ export const Projects = () => {
     }
 
     const updateData = async (data) => {
-        let fetchResp = await fetch(ENDPOINT + "/" + data.ProyectoID, {
+        let fetchResp = await fetch(PROJECT_ENDPOINT + "/" + data.ProyectoID, {
           method: "PUT",
           headers: {
               "Content-Type": "application/json",
@@ -119,7 +119,7 @@ export const Projects = () => {
     }
 
     const deleteData = async (row) => {
-        let fetchResp = await fetch(ENDPOINT + "/" + row.ProyectoID, {
+        let fetchResp = await fetch(PROJECT_ENDPOINT + "/" + row.ProyectoID, {
           method: "DELETE",
           headers: {
               "Content-Type": "application/json",
@@ -147,7 +147,7 @@ export const Projects = () => {
             const formData = new FormData();
             formData.append("archivo", file);
     
-            fetch(`${ENDPOINT}/${project.ProyectoID}/cargar-archivo`, {
+            fetch(`${PROJECT_ENDPOINT}/${project.ProyectoID}/cargar-archivo`, {
                 method: "POST",
                 body: formData,
             })
@@ -175,7 +175,7 @@ export const Projects = () => {
     };
 
     const viewFile = async (project) => {
-        const fetchResp = await fetch(`${ENDPOINT}/${project.ProyectoID}/ver-archivo`);
+        const fetchResp = await fetch(`${PROJECT_ENDPOINT}/${project.ProyectoID}/ver-archivo`);
         if (fetchResp.status === 200) {
             const blob = await fetchResp.blob();
             const url = URL.createObjectURL(blob);

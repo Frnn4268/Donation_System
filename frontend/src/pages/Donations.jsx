@@ -1,8 +1,8 @@
 import  { useEffect, useState, useRef } from "react";
 
 export const Donations = () => {
-  const ENDPOINT = "http://localhost:4000/api/v1/proyectos";
-  const DONACION_ENDPOINT = "http://localhost:4000/api/v1/donaciones";
+  const PROJECT_ENDPOINT = import.meta.env.VITE_PROJECT_ENDPOINT;
+  const DONATION_ENDPOINT = import.meta.env.VITE_DONATION_ENDPOINT;
 
   const [proyectos, setProyectos] = useState([]);
   const [currentProyecto, setCurrentProyecto] = useState(null);
@@ -18,7 +18,7 @@ export const Donations = () => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch(ENDPOINT, {
+        const response = await fetch(PROJECT_ENDPOINT, {
           headers: {
             "Authorization": `Bearer ${getToken()}`
           }
@@ -57,7 +57,7 @@ export const Donations = () => {
     };
 
     try {
-      const response = await fetch(DONACION_ENDPOINT, {
+      const response = await fetch(DONATION_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

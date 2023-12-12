@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export const UserDonations = () => {
-  const USERDONATION_ENDPOINT = "http://localhost:4000/api/v1/donaciones/my-donations";
+  const USERDONATION_ENDPOINT = import.meta.env.VITE_USERDONATION_ENDPOINT;
 
   const [userDonations, setUserDonations] = useState([]);
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export const Users = () => {
-  const ENDPOINT = "http://localhost:4000/api/v1/usuarios";
+  const USER_ENDPOINT = import.meta.env.VITE_USER_ENDPOINT;
 
   const [usuarios, setUsuarios] = useState([]);
 
@@ -13,7 +13,7 @@ export const Users = () => {
     try {
       const newStatus = user.Activo === true ? false : true;
 
-      const response = await fetch(`${ENDPOINT}/${user.UsuarioID}`, {
+      const response = await fetch(`${USER_ENDPOINT}/${user.UsuarioID}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -39,7 +39,7 @@ export const Users = () => {
     const fetchUsuarios = async () => {
       try {
         console.log(sessionStorage.getItem("token"));
-        const response = await fetch(ENDPOINT, {
+        const response = await fetch(USER_ENDPOINT, {
           headers: {
             "Authorization": `Bearer ${getToken()}`
           }

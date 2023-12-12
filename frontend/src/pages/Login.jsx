@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export const Login = () => {
-  const ENDPOINT = "http://localhost:4000/api/v1/login";
+  const LOGIN_ENDPOINT = import.meta.env.VITE_LOGIN_ENDPOINT;
 
   const [usuario, setUsuario] = useState({
     Email: "",
@@ -19,7 +19,7 @@ export const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(ENDPOINT, {
+      const response = await fetch(LOGIN_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

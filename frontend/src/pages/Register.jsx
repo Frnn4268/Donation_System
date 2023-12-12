@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export const Register = () => {
-    const ENDPOINT = "http://localhost:4000/api/v1/register"; // Endpoint para el registro
+    const REGISTER_ENDPOINT = import.meta.env.VITE_REGISTER_ENDPOINT; // REGISTER_ENDPOINT para el registro
 
     const [usuario, setUsuario] = useState({
         Nombre: "",
@@ -23,7 +23,7 @@ export const Register = () => {
         e.preventDefault();
 
         try {
-            let response = await fetch(ENDPOINT, {
+            let response = await fetch(REGISTER_ENDPOINT, {
                 method: "POST",
                 credentials: "include",
                 headers: {
