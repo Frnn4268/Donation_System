@@ -31,9 +31,10 @@ export const Login = () => {
         const data = await response.json();
         // Guarda el token en el almacenamiento local
         sessionStorage.setItem("token", data.token)
-        alert("Usuario autenticado con éxito");
+        alert("Successfully authenticated user");
       } else {
-        alert("Error al autenticar");
+        alert("Authentication failed");
+        console.log(response.json())
       }
     } catch (err) {
       console.log(err);
@@ -44,8 +45,8 @@ export const Login = () => {
     <div className="w3-cell-row">
       <div className="w3-container w3-light-gray w3-cell w3-cell-middle">
         <form className="w3-container" onSubmit={loginClick}>
-          <h3>Inicio de Sesión</h3>
-          <label htmlFor="Email">Correo electrónico: </label>
+          <h3>Login</h3>
+          <label htmlFor="Email">Email: </label>
           <input
             type="text"
             id="Email"
@@ -54,7 +55,7 @@ export const Login = () => {
             value={usuario.Email}
             onChange={valueHasChanged}
           />
-          <label htmlFor="PasswordHash">Contraseña: </label>
+          <label htmlFor="PasswordHash">Password: </label>
           <input
             type="password"
             id="PasswordHash"
@@ -65,9 +66,8 @@ export const Login = () => {
           />
           <button
             type="submit"
-            className="w3-button-blue w3-margin-top w3-margin-bottom"
-          >
-            Ingresar
+            className="w3-button-blue w3-margin-top w3-margin-bottom">
+            Enter
           </button>
         </form>
       </div>

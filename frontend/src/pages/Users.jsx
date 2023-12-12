@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const Usuarios = () => {
+export const Users = () => {
   const ENDPOINT = "http://localhost:4000/api/v1/usuarios";
 
   const [usuarios, setUsuarios] = useState([]);
@@ -17,7 +17,7 @@ export const Usuarios = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${getToken()}` // Cambia "x-access-token" a "Authorization"
+          "Authorization": `Bearer ${getToken()}` 
         },
         body: JSON.stringify({ ...user, Activo: newStatus })
       });
@@ -28,7 +28,7 @@ export const Usuarios = () => {
         );
         setUsuarios(updatedUsers);
       } else {
-        console.error("Error al actualizar el estado del usuario");
+        console.error("Error updating user status");
       }
     } catch (error) {
       console.error(error);
@@ -41,14 +41,14 @@ export const Usuarios = () => {
         console.log(sessionStorage.getItem("token"));
         const response = await fetch(ENDPOINT, {
           headers: {
-            "Authorization": `Bearer ${getToken()}` // Cambia "x-access-token" a "Authorization"
+            "Authorization": `Bearer ${getToken()}`
           }
         });
         if (response.ok) {
           const data = await response.json();
           setUsuarios(data);
         } else {
-          console.error("Error al obtener usuarios");
+          console.error("Error getting users");
         }
       } catch (error) {
         console.error(error);
@@ -59,16 +59,16 @@ export const Usuarios = () => {
 
   return (
     <div>
-      <h1>Usuarios</h1>
+      <h1>Users</h1>
       <table className="w3-table w3-striped w3-bordered w3-border">
         <thead>
           <tr>
             <th>ID</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
+            <th>First Name</th>
+            <th>Last Name</th>
             <th>Email</th>
             <th>Rol</th>
-            <th>Estado</th>
+            <th>State</th>
           </tr>
         </thead>
         <tbody>
@@ -85,14 +85,14 @@ export const Usuarios = () => {
                     className="w3-button w3-green"
                     onClick={() => toggleUserStatus(user)}
                   >
-                    Activo
+                    Active
                   </button>
                 ) : (
                   <button
                     className="w3-button w3-red"
                     onClick={() => toggleUserStatus(user)}
                   >
-                    Inactivo
+                    Idle
                   </button>
                 )}
               </td>
@@ -103,5 +103,3 @@ export const Usuarios = () => {
     </div>
   );
 };
-
-export default Usuarios;

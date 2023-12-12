@@ -48,4 +48,20 @@ router.post('/', async (req, res) => {
   }
 })
 
+// Route to get all donations made by the logged-in user
+router.get('/my-donations', async (req, res) => {
+  try {
+    const userId = req.user.user_id // User information is stored in req.user
+
+    const userDonations = await Donation.findAll({
+      where: { DonanteID: userId }
+    })
+
+    res.status(200).json(userDonations)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Error fetching user donations.' })
+  }
+})
+
 module.exports = router

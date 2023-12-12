@@ -27,7 +27,7 @@ export const Donations = () => {
           const data = await response.json();
           setProyectos(data);
         } else {
-          console.error("Error al obtener proyectos");
+          console.error("Error getting projects");
         }
       } catch (error) {
         console.error(error);
@@ -53,7 +53,7 @@ export const Donations = () => {
       FechaDonacion: new Date(),
       Monto: parseFloat(montoDonacion),
       BoletaDeposito: generarBoletaDeposito(),
-      Estado: "Realizado",
+      Estado: "Done",
     };
 
     try {
@@ -75,7 +75,7 @@ export const Donations = () => {
         errorMessage.current.showModal();
       }
     } catch (error) {
-      console.error("Error al realizar la donación:", error);
+      console.error("Donation error:", error);
       errorMessage.current.showModal();
     }
   };
@@ -86,15 +86,15 @@ export const Donations = () => {
 
   return (
     <>
-      <h1>Proyectos</h1>
+      <h1>Projects</h1>
       <table className="w3-table w3-striped w3-bordered w3-border">
         <thead>
           <tr>
-            <th>ProyectoID</th>
-            <th>NombreProyecto</th>
-            <th>DescripcionProyecto</th>
-            <th>MetaTotal</th>
-            <th>Donar</th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Goal</th>
+            <th>Donate</th>
           </tr>
         </thead>
         <tbody>
@@ -105,7 +105,7 @@ export const Donations = () => {
               <td>{proyecto.DescripcionProyecto}</td>
               <td>{proyecto.MetaTotal}</td>
               <td>
-                <button onClick={() => handleDonarClick(proyecto)}>Donar</button>
+                <button onClick={() => handleDonarClick(proyecto)}>Donate</button>
               </td>
             </tr>
           ))}
@@ -114,24 +114,24 @@ export const Donations = () => {
 
       <dialog ref={dialogDonarRef}>
         <h4>Donar al Proyecto</h4>
-        <label htmlFor="montoDonacion">Monto de Donación:</label>
+        <label htmlFor="montoDonacion">Donation ammount:</label>
         <input
           type="number"
           id="montoDonacion"
           value={montoDonacion}
           onChange={(e) => setMontoDonacion(e.target.value)}
         />
-        <button onClick={confirmarDonacion}>Aceptar</button>
+        <button onClick={confirmarDonacion}>Accept</button>
         <button onClick={() => dialogDonarRef.current.close()}>Cancelar</button>
       </dialog>
 
       <dialog ref={successMessage}>
-        <p>La donación se realizó con éxito.</p>
-        <button onClick={() => successMessage.current.close()}>Cerrar</button>
+        <p>The donation was made successfully.</p>
+        <button onClick={() => successMessage.current.close()}>Close</button>
       </dialog>
 
       <dialog ref={errorMessage}>
-        <p>Hubo un problema al realizar la donación. Verifica el monto ingresado.</p>
+        <p>There was a problem making the donation. Check the amount entered</p>
         <button onClick={() => errorMessage.current.close()}>Cerrar</button>
       </dialog>
     </>

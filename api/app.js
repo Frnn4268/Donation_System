@@ -1,85 +1,48 @@
-const createError = require('http-errors')
-const express = require('express')
-const path = require('path')
-const cookieParser = require('cookie-parser')
-const logger = require('morgan')
-const cors = require('cors')
-const session = require('express-session')
-const helmet = require('helmet')
-
-const { testConnection } = require('./middlewares/databaseMiddleware')
+const express = require('express') // Import the express framework
+const app = express() // Create an instance of the express application
+const path = require('path') // Import the path module for working with file paths
+const cookieParser = require('cookie-parser') // Import cookie-parser for parsing cookies
+const logger = require('morgan') // Import morgan for logging
 
 require('dotenv').config()
 
+// Importing custom Middlewares
+const { testConnection } = require('./middlewares/databaseMiddleware')
+const sessionMiddleware = require('./middlewares/sessionMiddleware')
+const corsOptionsMiddleware = require('./middlewares/corsOptionsMiddleware')
+const cspMiddleware = require('./middlewares/cspMiddleware')
+const viewMiddleware = require('./middlewares/viewMiddleware')
+const notFoundMiddleware = require('./middlewares/notFoundMiddleware')
+
+// Importing backend routes
 const indexRouter = require('./routes/indexRouter')
 const proyectosRouter = require('./routes/projectRouter')
 const usuariosRouter = require('./routes/userRouter')
 const loginRouter = require('./routes/authRouter')
-const registerRouter = require('./routes/regRouter')
+const registerRouter = require('./routes/registerRouter')
 const donacionesRouter = require('./routes/donationRouter')
+const errorMiddleware = require('./middlewares/errorMiddleware')
 
-const app = express()
-app.use(testConnection)
+app.use(corsOptionsMiddleware()) // Use the CORS options middleware
+app.use(sessionMiddleware()) // Use the session middleware
+app.use(express.json()) // Parse incoming JSON requests
+app.use(express.urlencoded({ extended: false })) // Parse incoming URL-encoded requests
+app.use(express.static(path.join(__dirname, 'public'))) // Serve static files from the 'public' directory
+app.use(logger('dev')) // Use the Morgan logger with the 'dev' format
+app.use(cookieParser()) // Parse incoming cookies
+app.use(testConnection) // Use the custom middleware for testing database connection
+app.use(cspMiddleware) // Use the Content Security Policy middleware
+viewMiddleware(app) // Use the custom middleware for rendering views
 
-app.use(session({
-  secret: process.env.TOKEN_KEY,
-  resave: false,
-  saveUninitialized: true
-}))
-
-const corsOptions = {
-  origin: process.env.FRONTEND_DOMAIN, // Colocar dominio de Digital Ocean
-  credentials: true
-}
-
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", 'trusted-cdn.com'],
-      styleSrc: ["'self'", 'fonts.googleapis.com'],
-      // Agrega una directiva para bloquear las fuentes de scripts y estilos en línea
-      scriptSrcElem: ["'self'"], // permitir scripts en línea del mismo origen
-      scriptSrcAttr: ["'none'"], // no permitir atributos 'src' de elementos de script
-      styleSrcElem: ["'self'"], // permitir estilos en línea del mismo origen
-      styleSrcAttr: ["'none'"] // no permitir atributos 'src' de elementos de estilo
-    }
-  })
-)
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'ejs')
-
-// Middlewares.
-app.use(cors(corsOptions))
-app.use(logger('dev'))
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
-app.use(cookieParser())
-app.use(express.static(path.join(__dirname, 'public')))
-app.use(helmet())
-
-// Routes
+// Using backend routes
 app.use('/', indexRouter)
-app.use('/api/v1/proyectos', proyectosRouter)
-app.use('/api/v1/usuarios', usuariosRouter)
 app.use('/api/v1', loginRouter)
 app.use('/api/v1/register', registerRouter)
+app.use('/api/v1/proyectos', proyectosRouter)
 app.use('/api/v1/donaciones', donacionesRouter)
+app.use('/api/v1/usuarios', usuariosRouter)
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404))
-})
-
-// error handler
-app.use(function (err, req, res, next) {
-  res.locals.message = err.message
-  res.locals.error = req.app.get('env') === 'development' ? err : {}
-
-  res.status(err.status || 500)
-  res.render('error')
-})
+app.use(notFoundMiddleware) // Use the custom middleware for handling 404 errors
+app.use(errorMiddleware) // Use the custom middleware for handling errors
 
 module.exports = app

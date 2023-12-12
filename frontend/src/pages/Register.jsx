@@ -33,10 +33,10 @@ export const Register = () => {
             });
 
             if (response.ok) {
-                alert("Usuario registrado con éxito");
+                alert("Registered user successfully");
                 // Puedes redirigir al usuario a otra página o hacer algo más después del registro.
             } else {
-                alert("Error al registrar el usuario");
+                alert("Error registering user");
             }
         } catch (err) {
             console.log(err);
@@ -47,8 +47,8 @@ export const Register = () => {
         <div className="w3-cell-row">
             <div className="w3-container w3-light-gray w3-cell w3-cell-middle">
                 <form className="w3-container" onSubmit={registerClick}>
-                    <h3>Registro de Usuario</h3>
-                    <label htmlFor="Nombre">Nombre: </label>
+                    <h3>User register</h3>
+                    <label htmlFor="Nombre">First Name: </label>
                     <input
                         type="text"
                         id="Nombre"
@@ -57,7 +57,7 @@ export const Register = () => {
                         value={usuario.Nombre}
                         onChange={valueHasChanged}
                     />
-                    <label htmlFor="Apellido">Apellido: </label>
+                    <label htmlFor="Apellido">Last Name: </label>
                     <input
                         type="text"
                         id="Apellido"
@@ -66,7 +66,7 @@ export const Register = () => {
                         value={usuario.Apellido}
                         onChange={valueHasChanged}
                     />
-                    <label htmlFor="Email">Correo electrónico: </label>
+                    <label htmlFor="Email">Email: </label>
                     <input
                         type="text"
                         id="Email"
@@ -75,7 +75,7 @@ export const Register = () => {
                         value={usuario.Email}
                         onChange={valueHasChanged}
                     />
-                    <label htmlFor="PasswordHash">Contraseña: </label>
+                    <label htmlFor="PasswordHash">Password: </label>
                     <input
                         type="password"
                         id="PasswordHash"
@@ -92,10 +92,10 @@ export const Register = () => {
                         value={usuario.Rol}
                         onChange={valueHasChanged}
                     >
-                        <option value="Empleado">Empleado</option>
-                        <option value="Donador">Donador</option>
+                        <option value="Empleado">Employee</option>
+                        <option value="Donador">Donor</option>
                     </select>
-                    <button type="submit" className="w3-button-blue w3-margin-top w3-margin-bottom">Registrar</button>
+                    <button type="submit" className="w3-button-blue w3-margin-top w3-margin-bottom">Register</button>
                 </form>
             </div>
         </div>

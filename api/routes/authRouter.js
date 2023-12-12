@@ -25,6 +25,13 @@ router.post('/login', async (req, res) => { // Route for user login
       return
     }
 
+    // Check if the user is active
+    const userActive = await Users.findOne({ where: { Email } })
+    if (userActive.Activo === false) {
+      res.status(401).json({ message: 'User is inactive' })
+      return
+    }
+
     // Password validate
     const isPasswordValid = await bcrypt.compare(PasswordHash, user.PasswordHash)
 

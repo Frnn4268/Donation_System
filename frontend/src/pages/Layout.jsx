@@ -4,11 +4,11 @@ export const Layout = () => {
     return(
         <div>
             <NavLink to = "/Proyectos">
-                Proyectos
+                Projects
             </NavLink>
 
             <NavLink to = "/Usuarios">
-                Usuarios
+                Users
             </NavLink>
             <Outlet/>
         </div>

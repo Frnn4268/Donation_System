@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-export const Proyectos = () => {
+export const Projects = () => {
     const ENDPOINT = "http://localhost:4000/api/v1/proyectos";
 
     const getToken = () => {
@@ -32,14 +32,14 @@ export const Proyectos = () => {
                 console.log(sessionStorage.getItem("token"));
                 const response = await fetch(ENDPOINT, {
                     headers: {
-                        "Authorization": `Bearer ${getToken()}` // Cambia "x-access-token" a "Authorization"
+                        "Authorization": `Bearer ${getToken()}` 
                       }
                 });
                 if(response.ok) {
                     const data = await response.json();
                     setProyectos(data);
                 } else {
-                    console.error("Error al obtener proyectos");
+                    console.error("Error getting projects");
                 }
             } catch (error) {
                 console.error(error);
@@ -153,15 +153,15 @@ export const Proyectos = () => {
             })
             .then((response) => {
                 if (response.ok) {
-                    alert("Archivo cargado con éxito.");
+                    alert("File uploaded successfully");
                     getAll();
                 } else {
-                    alert("Error al cargar el archivo.");
+                    alert("Error loading file.");
                 }
             })
             .catch((error) => {
                 console.error(error);
-                alert("Error al cargar el archivo.");
+                alert("Error loading file.");
             });
         }
     };    
@@ -181,16 +181,16 @@ export const Proyectos = () => {
             const url = URL.createObjectURL(blob);
             window.open(url);
         } else {
-            alert("No se encontraron archivos de soporte para el proyecto.");
+            alert("No supporting files were found for the project.");
         }
     };
 
     return (
         <>
             <dialog ref={dialogRef}>
-                <h4>Nuevo Proyecto</h4>
+                <h4>New Project</h4>
                 <form onSubmit={formSubmit} className="w3-container">
-                    <label htmlFor="nombreProyecto">NombreProyecto</label>
+                    <label htmlFor="nombreProyecto">ProjectName</label>
                     <input
                         type="text"
                         id="NombreProyecto"
@@ -199,7 +199,7 @@ export const Proyectos = () => {
                         value={currentProyecto.NombreProyecto}
                         onChange={valueHasChanged}
                     />
-                    <label htmlFor="descripcionProyecto">DescripcionProyecto</label>
+                    <label htmlFor="descripcionProyecto">ProjectDescripcion</label>
                     <input
                         type="text"
                         id="DescripcionProyecto"
@@ -208,7 +208,7 @@ export const Proyectos = () => {
                         value={currentProyecto.DescripcionProyecto}
                         onChange={valueHasChanged}
                     />
-                    <label htmlFor="empleadoID">EmpleadoID</label>
+                    <label htmlFor="empleadoID">EmployeeID</label>
                     <input
                         type="text"
                         id="EmpleadoID"
@@ -217,7 +217,7 @@ export const Proyectos = () => {
                         value={currentProyecto.EmpleadoID}
                         onChange={valueHasChanged}
                     />
-                    <label htmlFor="nombre">Nombre</label>
+                    <label htmlFor="nombre">EmployeeFirstName</label>
                     <input
                         type="text"
                         id="NombreEmpleado"
@@ -226,7 +226,7 @@ export const Proyectos = () => {
                         value={currentProyecto.NombreEmpleado}
                         onChange={valueHasChanged}
                     />
-                    <label htmlFor="apellido">Apellido</label>
+                    <label htmlFor="apellido">EmployeeLastName</label>
                     <input
                         type="text"
                         id="ApellidoEmpleado"
@@ -235,7 +235,7 @@ export const Proyectos = () => {
                         value={currentProyecto.ApellidoEmpleado}
                         onChange={valueHasChanged}
                     />
-                    <label htmlFor="metaTotal">MetaTotal</label>
+                    <label htmlFor="metaTotal">TotalGoal</label>
                     <input
                         type="text"
                         id="MetaTotal"
@@ -244,7 +244,7 @@ export const Proyectos = () => {
                         value={currentProyecto.MetaTotal}
                         onChange={valueHasChanged}
                     />
-                    <label htmlFor='estadoProyecto'>Estado</label>
+                    <label htmlFor='estadoProyecto'>State</label>
                         <select
                             className='w3-select'
                             name="EstadoProyecto" 
@@ -252,9 +252,9 @@ export const Proyectos = () => {
                             value={currentProyecto.EstadoProyecto}
                             onChange={valueHasChanged}
                             >
-                                <option value="">Seleccione</option>
-                                <option value="Inactivo">Inactivo</option>
-                                <option value="Activo">Activo</option>
+                                <option value="">Select</option>
+                                <option value="Inactivo">Idle</option>
+                                <option value="Activo">Active</option>
                         </select>
                     <div className="w3-row">
                         <div className="w3-col m4">
@@ -266,20 +266,20 @@ export const Proyectos = () => {
                     </div>
                 </form>
             </dialog>
-                <button onClick={newProyectoClick}>Nuevo Proyecto</button>
-            <h1>Proyectos</h1>
+                <button onClick={newProyectoClick}>New Project</button>
+            <h1>Projects</h1>
             <table className="w3-table w3-striped w3-bordered w3-border">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Empleado ID</th>
-                        <th>Nombre empleado</th>
-                        <th>Apellido empleado</th>
-                        <th>Meta Total</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Employee ID</th>
+                        <th>Employee First Name</th>
+                        <th>Employee Last Name</th>
+                        <th>Goal</th>
+                        <th>State</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -294,10 +294,10 @@ export const Proyectos = () => {
                         <td>{row.MetaTotal}</td>
                         <td>{row.EstadoProyecto}</td>
                         <td>
-                            <button className="w3-button w3-yellow" onClick={(e) => { showEdit(row) }}>Editar</button>
-                            <button className="w3-button w3-red" onClick={(e) => { deleteRow(row) }}>Borrar</button>
-                            <button className="w3-button w3-blue" onClick={(e) => { openFileUploadDialog(row) }}>Documentos de Soporte</button>   
-                            <button className="w3-button w3-green" onClick={(e) => { viewFile(row) }}>Ver Documento de Soporte</button>
+                            <button className="w3-button w3-yellow" onClick={(e) => { showEdit(row) }}>Edit</button>
+                            <button className="w3-button w3-red" onClick={(e) => { deleteRow(row) }}>Delete</button>
+                            <button className="w3-button w3-blue" onClick={(e) => { openFileUploadDialog(row) }}>Support documents</button>   
+                            <button className="w3-button w3-green" onClick={(e) => { viewFile(row) }}>See Support documents</button>
                         </td>
                     </tr>
                 ))}
@@ -305,18 +305,18 @@ export const Proyectos = () => {
             </table>
 
             <dialog ref={dialogDeleteRef}>
-                <h4>Confirmación de borrado</h4>
+                <h4>Deletion confirmation</h4>
                 <form onSubmit={confirmDelete} className="w3-container">
-                    ¿Está seguro de que desea eliminar el proyecto {currentProyecto.NombreProyecto}?
+                    Are you sure you want to delete the project {currentProyecto.NombreProyecto}?
                     <div className="w3-row">
                         <div className="w3-col m6">
-                            <button className="w3-button w3-red" type="submit">Confirmar</button>
+                            <button className="w3-button w3-red" type="submit">Confirm</button>
                         </div>
                         <div className="w3-col m6">
                             <button className="w3-button w3-blue" onClick={(e) => {
                                 e.preventDefault();
                                 dialogDeleteRef.current.close();
-                            }}>Cancelar</button>
+                            }}>Cancel</button>
                         </div>
                     </div>
                 </form>

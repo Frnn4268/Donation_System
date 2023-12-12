@@ -8,17 +8,17 @@ export const Logout = () => {
       })
         .then((response) => {
           if (response.status === 200) {
-            // Eliminar el token del sessionStorage y redirigir al inicio de sesión
+            // Remove token from sessionStorage and redirect to login
             sessionStorage.removeItem('token');
             window.location.replace('/');
           }
         })
         .catch((error) => {
-          console.error('Error al cerrar sesión:', error);
+          console.error('Logout error:', error);
         });
     };
   
     return (
-      <button onClick={handleLogout}>Cerrar sesión</button>
+      <button onClick={handleLogout}>Logout</button>
     );
   }
