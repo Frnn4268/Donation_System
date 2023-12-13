@@ -39,7 +39,7 @@ Donations.init(
       allowNull: false
     },
     BoletaDeposito: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.BLOB('long'),
       allowNull: true
     },
     Estado: {

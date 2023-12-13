@@ -1,5 +1,7 @@
 const express = require('express') // Importing modules
 const router = express.Router()
+const multer = require('multer')
+const upload = multer()
 
 const Project = require('../model/projectModel') // Importing models
 const Donation = require('../model/donationModel')
@@ -8,9 +10,8 @@ const verifyToken = require('../middlewares/verifyToken') // Importing the token
 router.use(verifyToken)
 
 // Route to save a new donation
-router.post('/', async (req, res) => {
+router.post('/', upload.single('archivo'), async (req, res) => {
   try {
-    // Get donation data from the request body
     const {
       DonanteID,
       EmpleadoID,
@@ -21,7 +22,7 @@ router.post('/', async (req, res) => {
       Estado
     } = req.body
 
-    // Create a new donation in the database
+    // Create a new donation in the db
     const newDonation = await Donation.create({
       DonanteID,
       EmpleadoID,
@@ -32,10 +33,17 @@ router.post('/', async (req, res) => {
       Estado
     })
 
-    // Get the project associated with the donation
+    // Load the file if exists
+    if (req.file) {
+      const archivoData = req.file.buffer
+      newDonation.DocumentoSoporte = archivoData
+      await newDonation.save()
+    }
+
+    // Obtains the project asociated to doantion
     const project = await Project.findByPk(ProyectoID)
 
-    // Update the total goal of the project by subtracting the donation amount
+    // Update the goal of the Project
     if (project) {
       project.MetaTotal -= Monto
       await project.save()

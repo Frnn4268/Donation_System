@@ -7,6 +7,8 @@ export const Donations = () => {
   const [proyectos, setProyectos] = useState([]);
   const [currentProyecto, setCurrentProyecto] = useState(null);
   const [montoDonacion, setMontoDonacion] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFileName, setSelectedFileName] = useState("");
   const dialogDonarRef = useRef(null);
   const successMessage = useRef(null);
   const errorMessage = useRef(null);
@@ -46,13 +48,17 @@ export const Donations = () => {
       return;
     }
 
+    if (selectedFile) {
+      await uploadFile();
+    }
+
     const donacion = {
-      DonanteID: null,
+      DonanteID: currentProyecto.EmpleadoID,
       EmpleadoID: currentProyecto.EmpleadoID,
       ProyectoID: currentProyecto.ProyectoID,
       FechaDonacion: new Date(),
       Monto: parseFloat(montoDonacion),
-      BoletaDeposito: generarBoletaDeposito(),
+      BoletaDeposito: selectedFile ? selectedFile.name : null,
       Estado: "Done",
     };
 
@@ -80,8 +86,42 @@ export const Donations = () => {
     }
   };
 
-  const generarBoletaDeposito = () => {
-    return "BD-" + Math.floor(Math.random() * 10000);
+  const uploadFile = async () => {
+    const formData = new FormData();
+    formData.append("archivo", selectedFile);
+
+    if (selectedFile.size > 5000000) {
+      alert("File size exceeds the limit (5 MB). Please upload a smaller file.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${PROJECT_ENDPOINT}/${currentProyecto.ProyectoID}/upload-file`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        alert("Error uploading file.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error uploading file.");
+    }
+  };
+
+  const openFileUploadDialog = () => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = ".pdf,.doc,.docx,.jpg,.png"; // Files types
+    fileInput.onchange = (e) => {
+      setSelectedFile(e.target.files[0]);
+      setSelectedFileName(e.target.files[0].name);
+    };
+    fileInput.click();
   };
 
   return (
@@ -113,7 +153,7 @@ export const Donations = () => {
       </table>
 
       <dialog ref={dialogDonarRef}>
-        <h4>Donar al Proyecto</h4>
+        <h4>Donate to Project</h4>
         <label htmlFor="montoDonacion">Donation ammount:</label>
         <input
           type="number"
@@ -121,18 +161,10 @@ export const Donations = () => {
           value={montoDonacion}
           onChange={(e) => setMontoDonacion(e.target.value)}
         />
+        <button onClick={openFileUploadDialog}>Support Document</button>
+        <label>File selected: {selectedFileName}</label>
         <button onClick={confirmarDonacion}>Accept</button>
-        <button onClick={() => dialogDonarRef.current.close()}>Cancelar</button>
-      </dialog>
-
-      <dialog ref={successMessage}>
-        <p>The donation was made successfully.</p>
-        <button onClick={() => successMessage.current.close()}>Close</button>
-      </dialog>
-
-      <dialog ref={errorMessage}>
-        <p>There was a problem making the donation. Check the amount entered</p>
-        <button onClick={() => errorMessage.current.close()}>Cerrar</button>
+        <button onClick={() => dialogDonarRef.current.close()}>Cancel</button>
       </dialog>
     </>
   );
