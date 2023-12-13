@@ -146,9 +146,18 @@ export const Projects = () => {
         if (file) {
             const formData = new FormData();
             formData.append("archivo", file);
-    
-            fetch(`${PROJECT_ENDPOINT}/${project.ProyectoID}/cargar-archivo`, {
+
+            // Size config of file
+            if (file.size > 5000000) { // Por ejemplo, 5 MB
+                alert("File size exceeds the limit (5 MB). Please upload a smaller file.");
+                return;
+            }
+            
+            fetch(`${PROJECT_ENDPOINT}/${project.ProyectoID}/upload-file`, {
                 method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${getToken()}`
+                },
                 body: formData,
             })
             .then((response) => {
@@ -169,13 +178,13 @@ export const Projects = () => {
     const openFileUploadDialog = (project) => {
         const fileInput = document.createElement("input");
         fileInput.type = "file";
-        fileInput.accept = ".pdf,.doc,.docx,.jpg,.png"; // Define los tipos de archivos permitidos
+        fileInput.accept = ".pdf,.doc,.docx,.jpg,.png"; // Files types
         fileInput.onchange = (e) => uploadFile(project, e.target.files[0]);
         fileInput.click();
     };
 
     const viewFile = async (project) => {
-        const fetchResp = await fetch(`${PROJECT_ENDPOINT}/${project.ProyectoID}/ver-archivo`);
+        const fetchResp = await fetch(`${PROJECT_ENDPOINT}/${project.ProyectoID}/see-documents`);
         if (fetchResp.status === 200) {
             const blob = await fetchResp.blob();
             const url = URL.createObjectURL(blob);

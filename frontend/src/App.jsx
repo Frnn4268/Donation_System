@@ -21,16 +21,16 @@ function App() {
             <NavLink to="/register">Register</NavLink>
           </li>
           <li>
-            <NavLink to="/proyectos">Projects</NavLink>
+            <NavLink to="/projects">Projects</NavLink>
           </li>
           <li>
-            <NavLink to="/donaciones">Donations</NavLink>
+            <NavLink to="/donations">Donations</NavLink>
           </li>
           <li>
-            <NavLink to="/donaciones/my-donations">User Donations</NavLink>
+            <NavLink to="/donations/my-donations">User Donations</NavLink>
           </li>
           <li>
-            <NavLink to="/usuarios">Users</NavLink>
+            <NavLink to="/users">Users</NavLink>
           </li>
           <li>
             <NavLink to="/logout">Logout</NavLink>
@@ -42,13 +42,13 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
-        <Route path="/proyectos" element={<Projects />} />
+        <Route path="/projects" element={<Projects />} />
 
-        <Route path="/donaciones" element={<Donations />} />
+        <Route path="/donations" element={<Donations />} />
 
-        <Route path="/donaciones/my-donations" element={<UserDonations />} />
+        <Route path="/donations/my-donations" element={<UserDonations />} />
 
-        <Route path="/usuarios" element={<Users />} />
+        <Route path="/users" element={<Users />} />
 
         <Route path="/logout" element={<Logout />} />
     

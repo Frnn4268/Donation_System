@@ -3,11 +3,11 @@ import { NavLink, Outlet } from "react-router-dom"
 export const Layout = () => {
     return(
         <div>
-            <NavLink to = "/Proyectos">
+            <NavLink to = "/Projects">
                 Projects
             </NavLink>
 
-            <NavLink to = "/Usuarios">
+            <NavLink to = "/Users">
                 Users
             </NavLink>
             <Outlet/>

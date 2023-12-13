@@ -4,12 +4,11 @@ const multer = require('multer')
 const upload = multer()
 
 const Project = require('../model/projectModel')
+const Donation = require('../model/donationModel')
 const verifyToken = require('../middlewares/verifyToken')
 
-router.use(verifyToken)
-
 // GET route to retrieve all projects
-router.get('/', async (req, res) => {
+router.get('/', verifyToken, async (req, res) => {
   const proyecto = await Project.findAll()
   res.status(200).json(proyecto)
 })
@@ -26,7 +25,7 @@ router.get('/:id', async (req, res) => {
 })
 
 // POST route to create a new project
-router.post('/', async (req, res) => {
+router.post('/', verifyToken, async (req, res) => {
   const dataProyectos = req.body
   await Project.sync()
   const createProyecto = await Project.create({
@@ -42,7 +41,7 @@ router.post('/', async (req, res) => {
 })
 
 // PUT route to update an existing project by ID
-router.put('/:id', async (req, res) => {
+router.put('/:id', verifyToken, async (req, res) => {
   const dataProyectos = req.body
   const id = req.params.id
   const updateProyecto = await Project.update({
@@ -62,18 +61,32 @@ router.put('/:id', async (req, res) => {
 })
 
 // DELETE route to delete a project by ID
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verifyToken, async (req, res) => {
   const id = req.params.id
-  const deleteProyecto = await Project.destroy({
-    where: {
-      proyectoID: id
-    }
+
+  const donationVerify = await Donation.count({
+    where: { ProyectoID: id }
   })
-  res.status(200).json(deleteProyecto)
+
+  if (donationVerify > 0) { // Verify if the project have donations
+    return res.status(400).json({ error: 'The project can´t be deleted. It has associated donations' })
+  }
+
+  try {
+    const deleteProyecto = await Project.destroy({
+      where: {
+        proyectoID: id
+      }
+    })
+    res.status(200).json(deleteProyecto)
+  } catch (error) {
+    res.status(500).json({ error: 'Error while the project has been deleted' })
+    console.error(error)
+  }
 })
 
 // POST route to upload a file for a specific project
-router.post('/:id/cargar-archivo', upload.single('archivo'), async (req, res, next) => {
+router.post('/:id/upload-file', verifyToken, upload.single('archivo'), async (req, res, next) => {
   const proyectoID = req.params.id
   const archivoData = req.file.buffer // Binary data of the file
 
@@ -94,26 +107,8 @@ router.post('/:id/cargar-archivo', upload.single('archivo'), async (req, res, ne
   }
 })
 
-// GET route to retrieve supporting documents for a specific project
-router.get('/:id/documentos-soporte', async (req, res) => {
-  const proyectoID = req.params.id
-
-  try {
-    const proyecto = await Project.findByPk(proyectoID)
-
-    if (!proyecto || !proyecto.DocumentoSoporte) {
-      return res.status(204).send('No supporting files were found for the project.')
-    }
-
-    res.status(200).json([{ DocumentoSoporte: proyecto.DocumentoSoporte }])
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Error getting support files' })
-  }
-})
-
 // GET route to view a specific supporting document for a project
-router.get('/:id/ver-archivo', async (req, res) => {
+router.get('/:id/see-documents', async (req, res) => {
   const proyectoID = req.params.id
 
   try {
